@@ -13,12 +13,13 @@ const props = defineProps({
 
 const addPoint = inject('addPointKey')
 const removePoint = inject('removePointKey')
-const switchIsCompleted = inject('switchIsCompletedKey')
+const checkIsMustMoved = inject('checkIsMustMovedKey')
 const isProgressFull = inject('isProgressFull')
 </script>
 
 <template>
 <div class="note">
+  {{note.id}}
   <input
       class="note-title-input"
       type="text"
@@ -31,7 +32,7 @@ const isProgressFull = inject('isProgressFull')
       <input
           class="is-completed"
           type="checkbox"
-          @click="switchIsCompleted(note, point)"
+          @change="checkIsMustMoved(note)"
           :disabled="title === 'Completed' || point.isCompleted || (title === 'New' && isProgressFull)"
           v-model="point.isCompleted"
       >
@@ -50,7 +51,7 @@ const isProgressFull = inject('isProgressFull')
   <button
       class="add-point"
       v-if="Object.keys(note.list).length < 5 && title==='New'"
-      @click="addPoint(note)"
+      @click="addPoint(notes, note)"
   >Add point</button>
 </div>
 </template>

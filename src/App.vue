@@ -3,13 +3,14 @@ import NoteColumn from './components/NoteColumn.vue'
 import {computed, provide} from 'vue'
 import {ref} from "vue";
 
-const newNotes = ref([])
-const inProgressNotes = ref([])
-const completedNotes = ref([])
+const newNotes = ref(JSON.parse(localStorage.getItem('newNotes')) ?? [])
+const inProgressNotes = ref(localStorage.getItem('inProgressNotes') ?? [])
+const completedNotes = ref(localStorage.getItem('completedNotes') ?? [])
 
 const handleAddNote = () => {
   newNotes.value.push({
-    id: (newNotes.value.length ?? 0) + 1,
+    // В роли id просто порядковый номер
+    id: (newNotes.value.length + inProgressNotes.value.length + completedNotes.value.length ?? 0) + 1,
     title: "",
     list: {
       1: {
@@ -26,14 +27,16 @@ const handleAddNote = () => {
       },
     }
   })
+  localStorage.setItem('newNotes', JSON.stringify(newNotes.value))
 }
 
-const addPoint = (note) => {
+const addPoint = (targetColumn, note) => {
   const id = Object.keys(note.list).length + 1
   note.list[id] = {
     name: "",
     isCompleted: false
   }
+  localStorage.setItem(`${targetColumn}`, JSON.stringify(targetColumn))
 }
 const removePoint = (note, id) => delete note.list[id]
 
@@ -47,9 +50,7 @@ const moveNote = (targetColumn, note) => {
     inProgressNotes.value.push(note)
   }
 }
-const switchIsCompleted = (note, point) => {
-  point.isCompleted = !point.isCompleted
-
+const checkIsMustMoved = (note) => {
   // Превращаем объект в массив значений, чтобы использовать методы массива
   const pointsArray = Object.values(note.list)
   const total = pointsArray.length
@@ -64,13 +65,17 @@ const switchIsCompleted = (note, point) => {
   } else if (ratio > 0.5) {
     moveNote('inProgressNotes', note)
   }
+
+  localStorage.setItem('newNotes', JSON.stringify(newNotes.value))
+  localStorage.setItem('inProgressNotes', JSON.stringify(inProgressNotes.value))
+  localStorage.setItem('completedNotes', JSON.stringify(completedNotes.value))
 }
 
 const isProgressFull = computed(() => inProgressNotes.value.length >= 5)
 
 provide('addPointKey', addPoint)
 provide('removePointKey', removePoint)
-provide('switchIsCompletedKey', switchIsCompleted)
+provide('checkIsMustMovedKey', checkIsMustMoved)
 provide('isProgressFull', isProgressFull)
 </script>
 

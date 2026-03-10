@@ -20,7 +20,7 @@ const addNote = () => emit('addNote')
         v-if="title === 'New' && notes.length < 3"
         @click="addNote()"
     >Add note</button>
-    <div class="notes" v-for="note in notes">
+    <div class="notes" v-for="note in notes" :key="note.id">
       <Note :notes="notes" :note="note" :title="title"></Note>
     </div>
   </div>
