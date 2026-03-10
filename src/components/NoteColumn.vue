@@ -1,6 +1,6 @@
 <script setup>
 import Note from "./Note.vue"
-const props = defineProps({
+defineProps({
   title: String,
   notes: Array
 })

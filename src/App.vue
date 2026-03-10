@@ -30,7 +30,10 @@ const handleAddNote = () => {
 
 const addPoint = (note) => {
   const id = Object.keys(note.list).length + 1
-  note.list[id] = 'New point'
+  note.list[id] = {
+    name: "",
+    isCompleted: false
+  }
 }
 const removePoint = (note, id) => delete note.list[id]
 
@@ -56,7 +59,7 @@ const switchIsCompleted = (note, point) => {
   const completedCount = pointsArray.filter(p => p.isCompleted).length
   const ratio = completedCount / total
 
-  if (ratio == 1) {
+  if (ratio === 1) {
     moveNote('completedNotes', note)
   } else if (ratio > 0.5) {
     moveNote('inProgressNotes', note)

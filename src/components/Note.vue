@@ -18,26 +18,37 @@ console.log(props.title)
 
 <template>
 <div class="note">
-  <input class="note-title-input" type="text" placeholder="Note name">
+  <input
+      class="note-title-input"
+      type="text"
+      placeholder="Note name"
+      v-model="note.name"
+      :disabled="title !== 'New'"
+  >
   <ul v-for="(point, id) in note.list" :key="id">
     <li>
       <input
           class="is-completed"
           type="checkbox"
           @click="switchIsCompleted(note, point)"
-          :disabled="title === 'Completed'"
+          :disabled="title === 'Completed' || point.isCompleted"
+          v-model="point.isCompleted"
       >
-      <input type="text" placeholder="point">
+      <input
+          type="text"
+          placeholder="point"
+          :disabled="title !== 'New'"
+          v-model="point.name">
       <button
           class="removePoint"
           @click="removePoint(note, id)"
-          v-if="Object.keys(note.list).length > 3"
+          v-if="Object.keys(note.list).length > 3 && title==='New'"
       >Remove</button>
     </li>
   </ul>
   <button
       class="add-point"
-      v-if="Object.keys(note.list).length < 5"
+      v-if="Object.keys(note.list).length < 5 && title==='New'"
       @click="addPoint(note)"
   >Add point</button>
 </div>
