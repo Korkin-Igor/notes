@@ -45,7 +45,13 @@ const removePoint = (note, id) => delete note.list[id]
 const moveNote = (targetColumn, note) => {
   if (targetColumn === 'completedNotes') {
     inProgressNotes.value = inProgressNotes.value.filter(n => n.id !== note.id);
-    dateTime = Date.now()
+    note.completedAt = new Date().toLocaleString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
     completedNotes.value.push(note)
   } else if (targetColumn === 'inProgressNotes') {
     newNotes.value = newNotes.value.filter(n => n.id !== note.id);

@@ -9,7 +9,6 @@ const props = defineProps({
     title: String,
     list: Object
   },
-  dateTime: Date
 })
 
 const addPoint = inject('addPointKey')
@@ -21,7 +20,6 @@ const isProgressFull = inject('isProgressFull')
 
 <template>
 <div class="note">
-  {{note.id}}
   <input
       class="note-title-input"
       type="text"
@@ -57,7 +55,9 @@ const isProgressFull = inject('isProgressFull')
       v-if="Object.keys(note.list).length < 5 && title==='New'"
       @click="addPoint(note)"
   >Add point</button>
-  <p v-if="title === 'Completed'">{{dateTime}}</p>
+  <p v-if="title === 'Completed' && note.completedAt" class="date-label">
+    Завершено: {{ note.completedAt }}
+  </p>
 </div>
 </template>
 
