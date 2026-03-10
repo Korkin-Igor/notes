@@ -2,7 +2,7 @@
 import Note from "./Note.vue"
 defineProps({
   title: String,
-  notes: Array
+  notes: Object
 })
 
 const emit = defineEmits(['addNote'])
@@ -17,11 +17,11 @@ const addNote = () => emit('addNote')
     <h2>{{ title }}</h2>
     <button
         class="add-note-button"
-        v-if="title === 'New'"
+        v-if="title === 'New' && notes.length < 3"
         @click="addNote()"
     >Add note</button>
     <div class="notes" v-for="note in notes">
-      <Note :note="note" :title="title"></Note>
+      <Note :notes="notes" :note="note" :title="title"></Note>
     </div>
   </div>
 </template>

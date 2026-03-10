@@ -3,6 +3,7 @@ import { inject } from 'vue'
 
 const props = defineProps({
   title: String,
+  notes: Object,
   note: {
     id: Number,
     title: String,
@@ -13,7 +14,7 @@ const props = defineProps({
 const addPoint = inject('addPointKey')
 const removePoint = inject('removePointKey')
 const switchIsCompleted = inject('switchIsCompletedKey')
-console.log(props.title)
+const isProgressFull = inject('isProgressFull')
 </script>
 
 <template>
@@ -31,7 +32,7 @@ console.log(props.title)
           class="is-completed"
           type="checkbox"
           @click="switchIsCompleted(note, point)"
-          :disabled="title === 'Completed' || point.isCompleted"
+          :disabled="title === 'Completed' || point.isCompleted || (title === 'New' && isProgressFull)"
           v-model="point.isCompleted"
       >
       <input

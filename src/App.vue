@@ -1,6 +1,6 @@
 <script setup>
 import NoteColumn from './components/NoteColumn.vue'
-import { provide } from 'vue'
+import {computed, provide} from 'vue'
 import {ref} from "vue";
 
 const newNotes = ref([])
@@ -66,9 +66,12 @@ const switchIsCompleted = (note, point) => {
   }
 }
 
+const isProgressFull = computed(() => inProgressNotes.value.length >= 5)
+
 provide('addPointKey', addPoint)
 provide('removePointKey', removePoint)
 provide('switchIsCompletedKey', switchIsCompleted)
+provide('isProgressFull', isProgressFull)
 </script>
 
 <template>
