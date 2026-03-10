@@ -1,16 +1,44 @@
 <script setup>
-import Note from './components/Note.vue'
+import NoteColumn from './components/NoteColumn.vue'
 import {ref} from "vue";
+
+const handleAddNote = (columnName) => {
+  switch (columnName) {
+    case "New":
+      newNotes.value.push({
+        title: "Note name",
+        list: ["Point", "Point", "Point"]
+      })
+      break
+    case "In progress":
+      break
+    case "Completed":
+      break
+  }
+}
 
 const newNotes = ref([])
 const inProgressNotes = ref([])
 const completedNotes = ref([])
+
 </script>
 
 <template>
-<Note title="New" :notes="newNotes"/>
-<Note title="In progress" :notes="inProgressNotes"/>
-<Note title="Completed" :notes="completedNotes"/>
+<NoteColumn
+    title="New"
+    :notes="newNotes"
+    @addNote="handleAddNote"
+/>
+<NoteColumn
+    title="In progress"
+    :notes="inProgressNotes"
+    @addNote="handleAddNote"
+/>
+<NoteColumn
+    title="Completed"
+    :notes="completedNotes"
+    @addNote="handleAddNote"
+/>
 </template>
 
 <style scoped>
