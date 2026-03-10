@@ -1,13 +1,16 @@
 <script setup>
-// import HelloWorld from './components/HelloWorld.vue'
 import Note from './components/Note.vue'
+import {ref} from "vue";
+
+const newNotes = ref([])
+const inProgressNotes = ref([])
+const completedNotes = ref([])
 </script>
 
 <template>
-<!--  <HelloWorld msg="Vite + Vue" />-->
-<Note title="New" />
-<Note title="In progress" />
-<Note title="Completed" />
+<Note title="New" :notes="newNotes"/>
+<Note title="In progress" :notes="inProgressNotes"/>
+<Note title="Completed" :notes="completedNotes"/>
 </template>
 
 <style scoped>

@@ -17,6 +17,6 @@ header h1 {
 #app {
   display: flex;
   justify-content: center;
-  gap: 15vw;
+  gap: 10vw;
   margin-top: 30px;
 }
