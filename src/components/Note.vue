@@ -8,12 +8,14 @@ const props = defineProps({
     id: Number,
     title: String,
     list: Object
-  }
+  },
+  dateTime: Date
 })
 
 const addPoint = inject('addPointKey')
 const removePoint = inject('removePointKey')
 const checkIsMustMoved = inject('checkIsMustMovedKey')
+const saveDataInLocalStorage = inject('saveDataInLocalStorageKey')
 const isProgressFull = inject('isProgressFull')
 </script>
 
@@ -24,6 +26,7 @@ const isProgressFull = inject('isProgressFull')
       class="note-title-input"
       type="text"
       placeholder="Note name"
+      @change="saveDataInLocalStorage(title)"
       v-model="note.name"
       :disabled="title !== 'New'"
   >
@@ -40,6 +43,7 @@ const isProgressFull = inject('isProgressFull')
           type="text"
           placeholder="point"
           :disabled="title !== 'New'"
+          @change="saveDataInLocalStorage(title)"
           v-model="point.name">
       <button
           class="removePoint"
@@ -51,8 +55,9 @@ const isProgressFull = inject('isProgressFull')
   <button
       class="add-point"
       v-if="Object.keys(note.list).length < 5 && title==='New'"
-      @click="addPoint(notes, note)"
+      @click="addPoint(note)"
   >Add point</button>
+  <p v-if="title === 'Completed'">{{dateTime}}</p>
 </div>
 </template>
 

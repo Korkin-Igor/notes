@@ -4,39 +4,40 @@ import {computed, provide} from 'vue'
 import {ref} from "vue";
 
 const newNotes = ref(JSON.parse(localStorage.getItem('newNotes')) ?? [])
-const inProgressNotes = ref(localStorage.getItem('inProgressNotes') ?? [])
-const completedNotes = ref(localStorage.getItem('completedNotes') ?? [])
+const inProgressNotes = ref(JSON.parse(localStorage.getItem('inProgressNotes')) ?? [])
+const completedNotes = ref(JSON.parse(localStorage.getItem('completedNotes')) ?? [])
+let dateTime;
 
 const handleAddNote = () => {
+  // В роли id порядковый номер заметки
+  const allIds = [
+    ...newNotes.value.map(n => n.id),
+    ...inProgressNotes.value.map(n => n.id),
+    ...completedNotes.value.map(n => n.id)
+  ];
+
+  // Если заметок нет, ID = 1, иначе берем Максимальный + 1
+  const id = allIds.length === 0 ? 1 : Math.max(...allIds) + 1;
+
   newNotes.value.push({
-    // В роли id просто порядковый номер
-    id: (newNotes.value.length + inProgressNotes.value.length + completedNotes.value.length ?? 0) + 1,
+    id: id,
     title: "",
     list: {
-      1: {
-        name: "",
-        isCompleted: false
-      },
-      2: {
-        name: "",
-        isCompleted: false
-      },
-      3: {
-        name: "",
-        isCompleted: false
-      },
+      1: { name: "", isCompleted: false },
+      2: { name: "", isCompleted: false },
+      3: { name: "", isCompleted: false },
     }
   })
   localStorage.setItem('newNotes', JSON.stringify(newNotes.value))
 }
 
-const addPoint = (targetColumn, note) => {
+const addPoint = (note) => {
   const id = Object.keys(note.list).length + 1
   note.list[id] = {
     name: "",
     isCompleted: false
   }
-  localStorage.setItem(`${targetColumn}`, JSON.stringify(targetColumn))
+  localStorage.setItem('newNotes', JSON.stringify(newNotes.value))
 }
 const removePoint = (note, id) => delete note.list[id]
 
@@ -44,6 +45,7 @@ const removePoint = (note, id) => delete note.list[id]
 const moveNote = (targetColumn, note) => {
   if (targetColumn === 'completedNotes') {
     inProgressNotes.value = inProgressNotes.value.filter(n => n.id !== note.id);
+    dateTime = Date.now()
     completedNotes.value.push(note)
   } else if (targetColumn === 'inProgressNotes') {
     newNotes.value = newNotes.value.filter(n => n.id !== note.id);
@@ -63,7 +65,10 @@ const checkIsMustMoved = (note) => {
   if (ratio === 1) {
     moveNote('completedNotes', note)
   } else if (ratio > 0.5) {
-    moveNote('inProgressNotes', note)
+    // если заметка еще не в completedNotes
+    if (!inProgressNotes.value.some(n => n.id === note.id)) {
+      moveNote('inProgressNotes', note)
+    }
   }
 
   localStorage.setItem('newNotes', JSON.stringify(newNotes.value))
@@ -71,11 +76,23 @@ const checkIsMustMoved = (note) => {
   localStorage.setItem('completedNotes', JSON.stringify(completedNotes.value))
 }
 
+const saveDataInLocalStorage = (title) => {
+  switch (title) {
+    case ('New'):
+      localStorage.setItem('newNotes', JSON.stringify(newNotes.value))
+      break;
+    case ('In progress'):
+      localStorage.setItem('inProgressNotes', JSON.stringify(inProgressNotes.value))
+      break;
+  }
+}
+
 const isProgressFull = computed(() => inProgressNotes.value.length >= 5)
 
 provide('addPointKey', addPoint)
 provide('removePointKey', removePoint)
 provide('checkIsMustMovedKey', checkIsMustMoved)
+provide('saveDataInLocalStorageKey', saveDataInLocalStorage)
 provide('isProgressFull', isProgressFull)
 </script>
 
@@ -92,6 +109,7 @@ provide('isProgressFull', isProgressFull)
   <NoteColumn
       title="Completed"
       :notes="completedNotes"
+      :dateTime="dateTime"
   />
 </template>
 
