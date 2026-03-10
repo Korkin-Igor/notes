@@ -7,9 +7,9 @@ const props = defineProps({
 
 const emit = defineEmits(['addNote'])
 
-const addNote = () => {
-  emit('addNote', props.title)
-}
+const addNote = () => emit('addNote')
+
+
 </script>
 
 <template>
@@ -21,7 +21,7 @@ const addNote = () => {
         @click="addNote()"
     >Add note</button>
     <div class="notes" v-for="note in notes">
-      <Note :note="note"></Note>
+      <Note :note="note" :title="title"></Note>
     </div>
   </div>
 </template>
@@ -32,15 +32,11 @@ const addNote = () => {
 
   padding: 10px;
 
-  width: 30vw;
-  min-width: 200px;
+  min-width: 350px;
 }
 
 .add-note-button {
   width: 40%;
-
-  position: relative;
-  left: -60px;
 }
 
 </style>
