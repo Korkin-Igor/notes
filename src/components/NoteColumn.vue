@@ -1,5 +1,6 @@
 <script setup>
 import Note from "./Note.vue"
+import Statistics from "./Statistics.vue";
 defineProps({
   title: String,
   notes: Object
@@ -23,6 +24,8 @@ const addNote = () => emit('addNote')
     <div class="notes" v-for="note in notes" :key="note.id">
       <Note :notes="notes" :note="note" :title="title"></Note>
     </div>
+    <Statistics :notes="notes" v-if="title === 'Completed' && Object.keys(notes).length >= 5"></Statistics>
+    <p v-else-if="title === 'Completed'">Для статистики необходимо завершить минимум 5 карточек</p>
   </div>
 </template>
 
